@@ -10,18 +10,25 @@ import {
   FileText,
   Grid,
   LogOut,
-  HelpCircle
+  HelpCircle,
+  X
 } from 'lucide-react';
 import PatientFormPopup from '@/app/components/DashboardComponents/Patients/PatientFormPopup';
 import DashboardCalendar from '@/app/components/DashboardComponents/DashboardCalender';
 import AppointmentDetailsModal from '@/app/components/DashboardComponents/Patients/AppointmentDetailsModal';
 
 const DashboardPatient = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(true);
   const [showAppointmentDetails, setShowAppointmentDetails] = useState(false);
   const [activeSection, setActiveSection] = useState('overview');
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const toggleChat = () => {
+    setIsChatOpen(prev => !prev);
+};
 
   const vitals = [
     { name: 'Body Temperature', value: '36.2', unit: '°C' },
@@ -113,6 +120,10 @@ const DashboardPatient = () => {
     navigate("/login");
   }
 
+  const handleReport = () => {
+    navigate("/patreport");
+  }
+
   const renderSidebar = () => (
     <aside className="w-64 bg-white border-r border-gray-200">
       <div className="p-6">
@@ -189,7 +200,7 @@ const DashboardPatient = () => {
   const renderBanner = () => (
     <div className="bg-blue-600 text-white rounded-xl p-8 flex justify-between items-center relative overflow-visible mt-10">
       <div>
-        <h2 className="text-2xl font-bold mb-2">Find the best doctors with Health Care</h2>
+        <h2 className="text-2xl font-bold mb-2">Find the best doctors with WellnessDoc</h2>
         <p className="text-blue-100">Appoint the doctors and get finest medical services.</p>
       </div>
       <img
@@ -277,7 +288,9 @@ const DashboardPatient = () => {
     <div className="bg-white rounded-xl shadow-sm mt-8 p-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="font-semibold">My Reports</h3>
-        <button className="text-gray-400 hover:text-gray-600">
+        <button 
+          onClick={handleReport}
+          className="text-gray-400 hover:text-gray-600">
           <ExternalLink className="w-5 h-5" />
         </button>
       </div>
@@ -356,6 +369,96 @@ const DashboardPatient = () => {
           onDownloadReport={handleDownloadReport}
         />
       )}
+
+      {/* Chat Interface */}
+      <div 
+                className={`fixed bottom-24 right-5 transform transition-all duration-300 ease-in-out ${
+                    isChatOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none'
+                }`}
+            >
+                <div 
+                    className="bg-white rounded-2xl shadow-2xl border border-gray-200"
+                    style={{
+                        width: '384px', // w-96 equivalent
+                        height: '600px'
+                    }}
+                >
+                    {/* Chat Header */}
+                    <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4 flex justify-between items-center rounded-t-2xl">
+                        <div className="flex items-center gap-3">
+                            <div className="relative">
+                                <img 
+                                    src="/doc.png" 
+                                    alt="AI Assistant" 
+                                    className="w-10 h-10 rounded-full border-2 border-white"
+                                />
+                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-white">Medical Assistant</h3>
+                                <span className="text-xs text-blue-100">Online</span>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={toggleChat}
+                            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                        >
+                            <X className="w-5 h-5 text-white" />
+                        </button>
+                    </div>
+
+                    {/* Chat Content Container */}
+                    <div 
+                        className="relative"
+                        style={{ height: 'calc(570px - 72px)' }} // Total height minus header height
+                    >
+                        <iframe
+                            src="https://med-bot-sable.vercel.app/"
+                            className="absolute top-0 left-0 w-full h-full"
+                            style={{
+                                border: 'none',
+                                overflow: 'scroll'
+                            }}
+                            title="Medical Assistant Chat"
+                            sandbox="allow-same-origin allow-scripts allow-forms"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Enhanced AI Chatbot Button */}
+            <div className="fixed bottom-5 right-5 z-20">
+                <div className={`absolute -top-12 right-0 transform transition-all duration-300 ${
+                    isHovered ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+                }`}>
+                    <div className="bg-black text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap">
+                        Chat with Medical Assistant
+                    </div>
+                </div>
+                <button
+                    onClick={toggleChat}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                    className={`group relative bg-transparent border-2 border-black p-2 rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 ${
+                        isChatOpen ? 'rotate-0' : 'hover:scale-110'
+                    }`}
+                >
+                    <div className="relative">
+                        <img
+                            src="/doc.png"
+                            alt="AI Chatbot"
+                            className="h-12 w-12 rounded-full transition-transform duration-300"
+                        />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div className="absolute -top-1 -right-1">
+                        <div className="relative">
+                            <div className="animate-ping absolute h-3 w-3 rounded-full bg-red-400 opacity-75"></div>
+                            <div className="relative h-3 w-3 rounded-full bg-red-500"></div>
+                        </div>
+                    </div>
+                </button>
+            </div>
     </div>
   );
 };
