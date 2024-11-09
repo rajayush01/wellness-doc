@@ -18,6 +18,7 @@ import SettingsComponent from './components/DashboardComponents/Settings';
 import VideoCall from './components/VideoCall/VideoCall';
 import DashboardPatient from './pages/Dashboard/DashboardPatient';
 import AppointmentPortal from './components/DashboardComponents/Patients/PatientAppointment';
+import ReportPage from './components/DashboardComponents/Patients/PatientReport';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/schedule" element={<AppointmentScheduling />} />
           <Route path="/appointment" element={<AppointmentPortal />} />
           <Route path="/reports" element={<MedicalReports />} />
+           <Route path="/patreport" element={<ReportPage/>} />
           <Route path="/docpro/:id" element={<DoctorProfile />} /> 
           <Route path="/patpro/:id" element={<PatientProfile />} />
           <Route path="/notification" element={<NotificationSystem />} />
@@ -47,7 +49,7 @@ function App() {
     // <Router>
     //   <div>
     //     <Routes>
-    //       {/* <Route path="/" element={<DashboardPatient />} /> */}
+    //       <Route path="/" element={<ReportPage/>} />
     //       <Route path="/" element={<AppointmentPortal />} />
     //       <Route path="/docpro/:id" element={<DoctorProfile />} />
     //     </Routes>

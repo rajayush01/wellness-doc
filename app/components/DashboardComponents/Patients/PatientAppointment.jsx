@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, User, Phone, MessageSquare, Grid, FileText, Settings, LogOut, X } from 'lucide-react';
+import { Calendar, Clock, User, Phone, MessageSquare, Grid, FileText, Settings, LogOut,X} from 'lucide-react';
 import "./Patient.css";
 import { useNavigate } from 'react-router-dom';
 
-
 const AppointmentPortal = () => {
   const navigate = useNavigate();
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -64,12 +65,16 @@ const AppointmentPortal = () => {
   };
 
   const handleReports = () => {
-    navigate('/reports?userType=patient');
+    navigate('/patreport');
   };
 
   const handleSettings = () => {
     navigate('/setting?userType=patient');
   };
+
+  const toggleChat = () => {
+    setIsChatOpen(prev => !prev);
+};
 
 
   const handleChange = (e) => {
@@ -77,6 +82,25 @@ const AppointmentPortal = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+   // Utility function to determine status color based on date
+   const getStatusColor = (date) => {
+    const appointmentDate = new Date(date);
+    const today = new Date();
+    
+    if (appointmentDate < today) {
+      return 'bg-gray-100 text-gray-600 border-gray-200';
+    } else if (appointmentDate.toDateString() === today.toDateString()) {
+      return 'bg-green-100 text-green-600 border-green-200';
+    }
+    return 'bg-blue-100 text-blue-600 border-blue-200';
+  };
+
+  // Utility function to format dates
+  const formatDate = (dateStr) => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateStr).toLocaleDateString('en-US', options);
   };
 
   return (
@@ -128,39 +152,81 @@ const AppointmentPortal = () => {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 p-8 bg-gray-100 flex flex-col justify-center items-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-6">Appointments</h1>
+      <div className="flex-1 p-8 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-800 mb-8">
+            <span className="block text-lg text-gray-500 mb-2">Welcome back</span>
+            Your Appointments
+          </h1>
 
-        {/* Display Ongoing or Previous Appointments */}
-        <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Ongoing or Previous Appointments</h2>
+          <div className="grid gap-6">
+            {appointments.map((appointment, index) => (
+              <div 
+                key={index} 
+                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100"
+              >
+                <div className="flex flex-col md:flex-row">
+                  {/* Time Column */}
+                  <div className="md:w-48 p-6 bg-gray-50 flex flex-col justify-center items-center border-b md:border-b-0 md:border-r border-gray-100">
+                    <p className="text-3xl font-bold text-gray-800">
+                      {appointment.time}
+                    </p>
+                    <p className="text-gray-500 mt-1 text-center">
+                      {formatDate(appointment.date)}
+                    </p>
+                  </div>
 
-          {appointments.length > 0 ? (
-            <ul className="space-y-4">
-              {appointments.map((appointment, index) => (
-                <li key={index} className="p-4 border-b rounded-lg">
-                  <p><strong>Name:</strong> {appointment.name}</p>
-                  <p><strong>Phone:</strong> {appointment.phone}</p>
-                  <p><strong>Date:</strong> {appointment.date}</p>
-                  <p><strong>Time:</strong> {appointment.time}</p>
-                  <p><strong>Reason:</strong> {appointment.reason}</p>
-                  <p><strong>Mode:</strong> {appointment.mode}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">No appointments available.</p>
-          )}
-        </div>
+                  {/* Main Content */}
+                  <div className="flex-1 p-6">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-3">
+                          <User className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <p className="text-sm text-gray-500">Doctor</p>
+                            <p className="font-semibold text-gray-900">{appointment.name}</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-3">
+                          <Phone className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <p className="text-sm text-gray-500">Contact</p>
+                            <p className="font-semibold text-gray-900">{appointment.phone}</p>
+                          </div>
+                        </div>
+                      </div>
 
-        {/* Button to Schedule a New Appointment */}
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors duration-200"
-        >
-          Schedule New Appointment
-        </button>
+                      <div className="space-y-4">
+                        <div>
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(appointment.date)} border`}>
+                            {appointment.mode}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center space-x-3">
+                          <MessageSquare className="w-5 h-5 text-gray-400" />
+                          <div>
+                            <p className="text-sm text-gray-500">Reason</p>
+                            <p className="font-semibold text-gray-900">{appointment.reason}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Add New Appointment Button */}
+          <button
+            onClick={() => setShowForm(true)}
+            className="mt-8 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2 w-full md:w-auto"
+          >
+            <Calendar className="w-5 h-5" />
+            <span>Schedule New Appointment</span>
+          </button>
 
         {/* Popup Modal for Scheduling Appointment */}
         {showForm && (
@@ -307,6 +373,96 @@ const AppointmentPortal = () => {
           </div>
         )}
       </div>
+      </div>
+       {/* Chat Interface */}
+       <div 
+                className={`fixed bottom-24 right-5 transform transition-all duration-300 ease-in-out ${
+                    isChatOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0 pointer-events-none'
+                }`}
+            >
+                <div 
+                    className="bg-white rounded-2xl shadow-2xl border border-gray-200"
+                    style={{
+                        width: '384px', // w-96 equivalent
+                        height: '600px'
+                    }}
+                >
+                    {/* Chat Header */}
+                    <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4 flex justify-between items-center rounded-t-2xl">
+                        <div className="flex items-center gap-3">
+                            <div className="relative">
+                                <img 
+                                    src="/doc.png" 
+                                    alt="AI Assistant" 
+                                    className="w-10 h-10 rounded-full border-2 border-white"
+                                />
+                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold text-white">Medical Assistant</h3>
+                                <span className="text-xs text-blue-100">Online</span>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={toggleChat}
+                            className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                        >
+                            <X className="w-5 h-5 text-white" />
+                        </button>
+                    </div>
+
+                    {/* Chat Content Container */}
+                    <div 
+                        className="relative"
+                        style={{ height: 'calc(570px - 72px)' }} // Total height minus header height
+                    >
+                        <iframe
+                            src="https://med-bot-sable.vercel.app/"
+                            className="absolute top-0 left-0 w-full h-full"
+                            style={{
+                                border: 'none',
+                                overflow: 'scroll'
+                            }}
+                            title="Medical Assistant Chat"
+                            sandbox="allow-same-origin allow-scripts allow-forms"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* Enhanced AI Chatbot Button */}
+            <div className="fixed bottom-5 right-5 z-20">
+                <div className={`absolute -top-12 right-0 transform transition-all duration-300 ${
+                    isHovered ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+                }`}>
+                    <div className="bg-black text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap">
+                        Chat with Medical Assistant
+                    </div>
+                </div>
+                <button
+                    onClick={toggleChat}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                    className={`group relative bg-transparent border-2 border-black p-2 rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 ${
+                        isChatOpen ? 'rotate-0' : 'hover:scale-110'
+                    }`}
+                >
+                    <div className="relative">
+                        <img
+                            src="/doc.png"
+                            alt="AI Chatbot"
+                            className="h-12 w-12 rounded-full transition-transform duration-300"
+                        />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div className="absolute -top-1 -right-1">
+                        <div className="relative">
+                            <div className="animate-ping absolute h-3 w-3 rounded-full bg-red-400 opacity-75"></div>
+                            <div className="relative h-3 w-3 rounded-full bg-red-500"></div>
+                        </div>
+                    </div>
+                </button>
+            </div>
     </div>
   );
 };
