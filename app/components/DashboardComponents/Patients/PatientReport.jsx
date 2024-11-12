@@ -36,7 +36,7 @@ const ReportPage = () => {
     };
 
     const handleAppointment = () => {
-        navigate('/appoitment')
+        navigate('/appointment')
     }
 
     const navItems = [
