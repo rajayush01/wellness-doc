@@ -49,9 +49,10 @@ function App() {
     // <Router>
     //   <div>
     //     <Routes>
-    //       <Route path="/" element={<ReportPage/>} />
-    //       <Route path="/" element={<AppointmentPortal />} />
+    //       <Route path="/" element={<PatientDashboard/>} />
+    //       <Route path="/appointment" element={<AppointmentPortal />} />
     //       <Route path="/docpro/:id" element={<DoctorProfile />} />
+    //       <Route path="/patpro/:id" element={<PatientProfile />} />
     //     </Routes>
     //   </div>
     // </Router>
