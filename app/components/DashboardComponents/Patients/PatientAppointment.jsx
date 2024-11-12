@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Calendar, Clock, User, Phone, MessageSquare, Grid, FileText, Settings, LogOut,X} from 'lucide-react';
 import "./Patient.css";
 import { useNavigate } from 'react-router-dom';
+import { FaBell, FaLock, FaShieldAlt, FaUser } from "react-icons/fa";
 
 const AppointmentPortal = () => {
   const navigate = useNavigate();
@@ -68,14 +69,27 @@ const AppointmentPortal = () => {
     navigate('/patreport');
   };
 
-  const handleSettings = () => {
-    navigate('/setting?userType=patient');
-  };
 
   const toggleChat = () => {
     setIsChatOpen(prev => !prev);
 };
 
+const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
+
+    const toggleSettingsDropdown = () => {
+      setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
+    };
+    const currentPatient = {
+      id: 'P-12345',
+      name: 'John Doe',
+      image: '/api/placeholder/32/32'
+    };
+
+    const handlemyprofile = () => {
+      setActiveSection('profile');
+      console.log("Profile section activated");
+      navigate(`/edit/${currentPatient.id}`);     
+    }
 
   const handleChange = (e) => {
     setFormData({
@@ -135,12 +149,46 @@ const AppointmentPortal = () => {
               <span>Reports</span>
             </button>
             <button
-              onClick={handleSettings}
-              className={`flex items-center space-x-3 px-4 py-2 rounded-lg ${activeSection === 'settings' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+              onClick={toggleSettingsDropdown}
+              className={`flex items-center space-x-3 px-4 py-2 rounded-lg ${activeSection === 'settings' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+                }`}
             >
               <Settings className="w-5 h-5" />
               <span>Settings</span>
             </button>
+
+            {isSettingsDropdownOpen && (
+              <div className="pl-8 mt-2 space-y-2">
+                <button
+                  onClick={handlemyprofile}
+                  className="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                >
+                  <FaUser className="w-5 h-5" />
+                  <span>My Profile</span>
+                </button>
+                {/* <button
+                  onClick={() => setActiveSection('account')}
+                  className="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                >
+                  <FaShieldAlt className="w-5 h-5" />
+                  <span>Account Settings</span>
+                </button> */}
+                <button
+                  onClick={() => setActiveSection('notifications')}
+                  className="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                >
+                  <FaBell className="w-5 h-5" />
+                  <span>Notifications</span>
+                </button>
+                <button
+                  onClick={() => setActiveSection('privacy')}
+                  className="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                >
+                  <FaLock className="w-5 h-5" />
+                  <span>Privacy</span>
+                </button>
+              </div>
+            )}
           </nav>
         </div>
 

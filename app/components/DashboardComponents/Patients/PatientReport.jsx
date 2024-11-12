@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Grid, FileText, Settings, LogOut, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { FaBell, FaLock, FaShieldAlt, FaUser } from "react-icons/fa";
 
 const ReportPage = () => {
     const navigate = useNavigate();
@@ -38,6 +39,22 @@ const ReportPage = () => {
     const handleAppointment = () => {
         navigate('/appointment')
     }
+    const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = useState(false);
+
+    const toggleSettingsDropdown = () => {
+      setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
+    };
+    const currentPatient = {
+      id: 'P-12345',
+      name: 'John Doe',
+      image: '/api/placeholder/32/32'
+    };
+
+    const handlemyprofile = () => {
+      setActiveSection('profile');
+      console.log("Profile section activated");
+      navigate(`/edit/${currentPatient.id}`);     
+    }
 
     const navItems = [
         { 
@@ -62,9 +79,11 @@ const ReportPage = () => {
             icon: Settings, 
             label: 'Settings', 
             id: 'settings', 
-            action: handleOverview 
+            action: toggleSettingsDropdown 
         },
     ];
+
+    
 
     return (
         <div className="flex min-h-screen bg-gray-50 text-gray-800">
