@@ -19,6 +19,7 @@ import VideoCall from './components/VideoCall/VideoCall';
 import DashboardPatient from './pages/Dashboard/DashboardPatient';
 import AppointmentPortal from './components/DashboardComponents/Patients/PatientAppointment';
 import ReportPage from './components/DashboardComponents/Patients/PatientReport';
+import EditablePatient from './pages/Profile/EditablePatientProfile';
 
 function App() {
   return (
@@ -49,7 +50,8 @@ function App() {
     // <Router>
     //   <div>
     //     <Routes>
-    //       <Route path="/" element={<PatientDashboard/>} />
+    //     {/* <Route path="/" element={<DoctorDashboard/>} /> */}
+    //       <Route path="/edit/:id" element={<EditablePatient/>} />
     //       <Route path="/appointment" element={<AppointmentPortal />} />
     //       <Route path="/docpro/:id" element={<DoctorProfile />} />
     //       <Route path="/patpro/:id" element={<PatientProfile />} />

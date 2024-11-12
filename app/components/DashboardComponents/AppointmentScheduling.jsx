@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, FileText, Settings, Bell, Search, Plus, LogOut, X, Check, User } from 'lucide-react';
+import { Calendar, UserCog, MessageSquare, ClipboardList, Clock, FileText, Settings, Bell, Search, Plus, LogOut, X, Check, Shield, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AppointmentModal = ({ isOpen, onClose, onSubmit, appointment = null }) => {
@@ -9,6 +9,8 @@ const AppointmentModal = ({ isOpen, onClose, onSubmit, appointment = null }) => 
     time: appointment?.time || '',
     type: appointment?.type || 'Check-up'
   });
+
+  
 
   React.useEffect(() => {
     if (appointment) {
@@ -116,6 +118,32 @@ const AppointmentScheduling = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const notifications = [
+      {
+          id: 1,
+          type: 'appointment',
+          message: 'New appointment request from John Doe',
+          time: '10 minutes ago',
+          unread: true
+      },
+      {
+          id: 2,
+          type: 'lab',
+          message: 'Lab results ready for Patient ID #12345',
+          time: '1 hour ago',
+          unread: true
+      },
+      {
+          id: 3,
+          type: 'message',
+          message: 'Nurse Sarah: Patient in Room 302 needs attention',
+          time: '2 hours ago',
+          unread: false
+      }
+  ];
 
   const toggleChat = () => {
     setIsChatOpen(prev => !prev);
@@ -161,18 +189,85 @@ const AppointmentScheduling = () => {
           <img src="/logo1.png" alt="logo" className="h-32 w-32" />
         </div>
         <div className="flex items-center gap-4">
-          <button
-            onClick={handleNotification}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <Bell className="w-6 h-6 text-gray-600" />
-          </button>
-          <button
-            onClick={handleSetting}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <Settings className="w-6 h-6 text-gray-600" />
-          </button>
+                    <button
+                        onClick={() => {
+                            setShowNotifications(!showNotifications);
+                            setShowSettings(false);
+                        }}
+                        className="p-2 rounded-full hover:bg-gray-100 transition-colors relative"
+                    >
+                        <Bell className="w-6 h-6 text-gray-600" />
+                        {notifications.some(n => n.unread) && (
+                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+                        )}
+                    </button>
+
+                    {/* Notifications Dropdown */}
+                    {showNotifications && (
+                        <div className="absolute right-28 mt-[380px] w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <div className="p-4 border-b border-gray-200">
+                                <h3 className="text-lg font-semibold">Notifications</h3>
+                            </div>
+                            <div className="max-h-96 overflow-y-auto">
+                                {notifications.map(notification => (
+                                    <div
+                                        key={notification.id}
+                                        className={`p-4 border-b border-gray-100 hover:bg-gray-50 ${notification.unread ? 'bg-blue-50' : ''
+                                            }`}
+                                    >
+                                        <div className="flex items-start gap-3">
+                                            {notification.type === 'appointment' && (
+                                                <Calendar className="w-5 h-5 text-blue-500" />
+                                            )}
+                                            {notification.type === 'lab' && (
+                                                <ClipboardList className="w-5 h-5 text-green-500" />
+                                            )}
+                                            {notification.type === 'message' && (
+                                                <MessageSquare className="w-5 h-5 text-purple-500" />
+                                            )}
+                                            <div className="flex-1">
+                                                <p className="text-sm text-gray-800">{notification.message}</p>
+                                                <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    <button
+                        onClick={() => {
+                            setShowSettings(!showSettings);
+                            setShowNotifications(false);
+                        }}
+                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                        <Settings className="w-6 h-6 text-gray-600" />
+                    </button>
+
+                    {/* Settings Dropdown */}
+                    {showSettings && (
+                        <div className="absolute right-28 mt-[300px] w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <div className="py-2">
+                                <button className="w-full px-4 py-2 text-left flex items-center gap-3 hover:bg-gray-50">
+                                    <UserCog className="w-4 h-4" />
+                                    <span>Account Settings</span>
+                                </button>
+                                <button className="w-full px-4 py-2 text-left flex items-center gap-3 hover:bg-gray-50">
+                                    <Bell className="w-4 h-4" />
+                                    <span>Notification Preferences</span>
+                                </button>
+                                <button className="w-full px-4 py-2 text-left flex items-center gap-3 hover:bg-gray-50">
+                                    <Shield className="w-4 h-4" />
+                                    <span>Privacy & Security</span>
+                                </button>
+                                <button className="w-full px-4 py-2 text-left flex items-center gap-3 hover:bg-gray-50">
+                                    <User className="w-4 h-4" />
+                                    <span>Profile Settings</span>
+                                </button>
+                            </div>
+                        </div>
+                    )}
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"

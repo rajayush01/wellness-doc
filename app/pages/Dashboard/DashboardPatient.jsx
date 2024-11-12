@@ -137,6 +137,17 @@ const DashboardPatient = () => {
     const toggleSettingsDropdown = () => {
       setIsSettingsDropdownOpen(!isSettingsDropdownOpen);
     };
+    const currentPatient = {
+      id: 'P-12345',
+      name: 'John Doe',
+      image: '/api/placeholder/32/32'
+    };
+
+    const handlemyprofile = () => {
+      setActiveSection('profile');
+      console.log("Profile section activated");
+      navigate(`/edit/${currentPatient.id}`);
+    }
 
     return (
       <aside className="w-64 bg-white border-r border-gray-200">
@@ -182,7 +193,7 @@ const DashboardPatient = () => {
             {isSettingsDropdownOpen && (
               <div className="pl-8 mt-2 space-y-2">
                 <button
-                  onClick={() => setActiveSection('profile')}
+                  onClick={handlemyprofile}
                   className="flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
                 >
                   <FaUser className="w-5 h-5" />
@@ -234,46 +245,46 @@ const DashboardPatient = () => {
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
     const [notifications, setNotifications] = useState([
       {
-          id: 1,
-          type: 'welcome',
-          title: 'Welcome to WellnessDoc!',
-          message: 'Thank you for choosing our platform for your healthcare needs.',
-          timestamp: '2 minutes ago',
-          read: false,
-          icon: Info,
-          color: 'blue'
+        id: 1,
+        type: 'welcome',
+        title: 'Welcome to WellnessDoc!',
+        message: 'Thank you for choosing our platform for your healthcare needs.',
+        timestamp: '2 minutes ago',
+        read: false,
+        icon: Info,
+        color: 'blue'
       },
       {
-          id: 2,
-          type: 'appointment',
-          title: 'Upcoming Appointment',
-          message: 'You have an appointment with Dr. Sarah Wilson tomorrow at 10:00 AM.',
-          timestamp: '1 hour ago',
-          read: false,
-          icon: Calendar,
-          color: 'green'
+        id: 2,
+        type: 'appointment',
+        title: 'Upcoming Appointment',
+        message: 'You have an appointment with Dr. Sarah Wilson tomorrow at 10:00 AM.',
+        timestamp: '1 hour ago',
+        read: false,
+        icon: Calendar,
+        color: 'green'
       },
       {
-          id: 3,
-          type: 'message',
-          title: 'New Message from Doctor',
-          message: 'Dr. James Lee has sent you a message regarding your recent lab results.',
-          timestamp: '2 hours ago',
-          read: true,
-          icon: MessageCircle,
-          color: 'purple'
+        id: 3,
+        type: 'message',
+        title: 'New Message from Doctor',
+        message: 'Dr. James Lee has sent you a message regarding your recent lab results.',
+        timestamp: '2 hours ago',
+        read: true,
+        icon: MessageCircle,
+        color: 'purple'
       },
       {
-          id: 4,
-          type: 'alert',
-          title: 'Complete Your Profile',
-          message: 'Please complete your medical history for better healthcare service.',
-          timestamp: '1 day ago',
-          read: true,
-          icon: AlertCircle,
-          color: 'orange'
+        id: 4,
+        type: 'alert',
+        title: 'Complete Your Profile',
+        message: 'Please complete your medical history for better healthcare service.',
+        timestamp: '1 day ago',
+        read: true,
+        icon: AlertCircle,
+        color: 'orange'
       }
-  ]);
+    ]);
     const currentPatient = {
       id: 'P-12345',
       name: 'John Doe',
@@ -319,7 +330,7 @@ const DashboardPatient = () => {
     };
 
     const handlePatientProfileClick = () => {
-      navigate(`/patpro/${currentPatient.id}`);
+      navigate(`/edit/${currentPatient.id}`);
     };
     const handleNotificationClick = () => {
       setIsNotificationsOpen(!isNotificationsOpen);
