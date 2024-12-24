@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html{
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for WebKit-based browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* Optional: Make scrollbar background transparent */
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-hidden {
+  scrollbar-width: none; /* Hide scrollbar */
+}
