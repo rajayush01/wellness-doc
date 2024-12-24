@@ -64,13 +64,21 @@ function App() {
 
 
 const DashboardWrapper = () => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const userType = searchParams.get('userType');
+  const [userType, setUserType] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      setUserType(searchParams.get('userType'));
+    }
+  }, []);
 
   if (userType === 'doctor') {
     return <DoctorDashboard />;
   } else if (userType === 'patient') {
     return <PatientDashboard />;
+  } else if (userType === null) {
+    return <div>Loading...</div>; // Display a loading state until userType is determined
   } else {
     return <div>No user type specified. Please login again.</div>;
   }
